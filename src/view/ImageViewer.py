@@ -57,7 +57,9 @@ class ImageViewer(QWidget):
     sixthSetImages = []
     seventhSetImages = []
     ImageBundle = [firstSetImages, secondSetImages, thirdSetImages, fourthSetImages, fifthSetImages, sixthSetImages, seventhSetImages]
+    
 
+    
     def __init__(self):
         '''
         Constructor
@@ -65,6 +67,8 @@ class ImageViewer(QWidget):
         super(ImageViewer, self).__init__()
         self.initGUI()
         self.counter = 0
+        self.pageLocation = "MAIN"
+        
     
     def initGUI(self):
         
@@ -74,10 +78,11 @@ class ImageViewer(QWidget):
         #self.mainPicture.setGeometry(QRect(500, 500))
         self.moveRight = QLabel("RIGHT")
         self.moveRight.setAlignment(Qt.AlignCenter)
-        clickable(self.moveRight).connect(partial(self.pressEvent, "RIGHT", "MAIN"))
+        self.setPageLocation("MAIN")
+        clickable(self.moveRight).connect(partial(self.pressEvent, "RIGHT", self.getPageLocation()))
         self.moveLeft = QLabel("LEFT")
         self.moveLeft.setAlignment(Qt.AlignCenter)
-        clickable(self.moveLeft).connect(partial(self.pressEvent, "LEFT", "MAIN"))
+        clickable(self.moveLeft).connect(partial(self.pressEvent, "LEFT", self.getPageLocation()))
         
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -95,8 +100,10 @@ class ImageViewer(QWidget):
             self.close()
         elif event.key() == Qt.Key_Space:
             print(str(self.counter))
-            print(str(len(self.ImageBundle[self.counter])))
-            self.pressEvent("ENTER", pageLocation)
+            #print(str(len(self.ImageBundle[self.counter])))
+            self.setPageLocation(self.counter)
+            #self.pageLocation = self.counter
+            self.pressEvent("ENTER", self.getPageLocation())
             
     def nextImage(self, imageList):
         if imageList:
@@ -112,22 +119,29 @@ class ImageViewer(QWidget):
                 Qt.SmoothTransformation))
             
     def pressEvent(self, objSource, pageLocation):
+        print pageLocation
+        print objSource
         if(objSource == "RIGHT" and pageLocation == "MAIN"):
             self.counter = self.counter + 1
-            print(str(len(self.OptionImages)))
+            #print(str(len(self.OptionImages)))
             if(self.counter > (len(self.OptionImages)-1)):
                 self.counter = 0
             self.showImages(self.OptionImages[self.counter])
-            print("RIGHT: " + str(self.counter))
+            #print("RIGHT: " + str(self.counter))
         elif (objSource == "LEFT" and pageLocation == "MAIN"):
             self.counter = self.counter - 1
             if(self.counter < 0):
                 self.counter = (len(self.OptionImages)-1)
             self.showImages(self.OptionImages[self.counter])
-            print("LEFT: " + str(self.counter))
-    
+            #print("LEFT: " + str(self.counter))
+        elif (objSource == "ENTER" and pageLocation == 1):
+            self.showImages(self.firstSetImages[self.counter])
             
         
-            
+    def setPageLocation(self, pageLocation):
+        self.pageLocation = pageLocation
+    
+    def getPageLocation(self):
+        return self.pageLocation        
     
         
