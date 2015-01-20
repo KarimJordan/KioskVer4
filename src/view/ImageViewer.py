@@ -46,13 +46,17 @@ class ImageViewer(QWidget):
        "C:/Users/Decoder/Desktop/Image Resources for Thesis/smile.jpg",
        "C:/Users/Decoder/Desktop/Image Resources for Thesis/stocks.jpg"           
                     ]
-    firstSetImages = []
+    firstSetImages = [
+       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc1.jpg",
+       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg",
+                      ]
     secondSetImages = []
     thirdSetImages = []
     fourthSetImages = []
     fifthSetImages = []
     sixthSetImages = []
     seventhSetImages = []
+    ImageBundle = [firstSetImages, secondSetImages, thirdSetImages, fourthSetImages, fifthSetImages, sixthSetImages, seventhSetImages]
 
     def __init__(self):
         '''
@@ -89,6 +93,10 @@ class ImageViewer(QWidget):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()
+        elif event.key() == Qt.Key_Space:
+            print(str(self.counter))
+            print(str(len(self.ImageBundle[self.counter])))
+            self.pressEvent("ENTER", pageLocation)
             
     def nextImage(self, imageList):
         if imageList:
