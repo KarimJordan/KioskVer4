@@ -78,6 +78,7 @@ class ImageViewer(QWidget):
         self.initGUI()
         self.counter = 0
         self.directory = "MAIN"
+        self.subDirectory = 0
         
     
     def initGUI(self):
@@ -140,11 +141,11 @@ class ImageViewer(QWidget):
                 Qt.SmoothTransformation))
             
     def pressEvent(self, objSource, pageLocation):
-        print ("PAGELOCATION: "+ str(pageLocation))
 #         print objSource
 #         print self.directory
-            
+        #self.directory = pageLocation
         if(objSource == "RIGHT"):
+            print ("MAIN PAGELOCATION: "+ str(pageLocation))
             if(self.directory == "MAIN"):
                 self.counter = self.counter + 1
                 #print(str(len(self.OptionImages)))
@@ -161,6 +162,7 @@ class ImageViewer(QWidget):
 #                 if(self.counter > (len(self.ImageBundle[pageLocation])-1)):
 #                     self.counter = 0
         elif (objSource == "LEFT"):
+            print ("MAIN PAGELOCATION: "+ str(pageLocation))
             if (self.directory == "MAIN"):
                 self.counter = self.counter - 1
                 if(self.counter < 0):
