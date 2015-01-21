@@ -45,16 +45,26 @@ class ImageViewer(QWidget):
        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pencil.jpg",
        "C:/Users/Decoder/Desktop/Image Resources for Thesis/smile.jpg",
        "C:/Users/Decoder/Desktop/Image Resources for Thesis/stocks.jpg"           
-                    ]
+        ]
     firstSetImages = [
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc1.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg",
-                      ]
-    secondSetImages = []
-    thirdSetImages = []
-    fourthSetImages = []
-    fifthSetImages = []
-    sixthSetImages = []
+       "C:/Users/Decoder/Desktop/Image Resources for Thesis/stocks.jpg"
+        ]
+    secondSetImages = [
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/smile.jpg"
+        ]
+    thirdSetImages = [
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pencil.jpg"
+        ]
+    fourthSetImages = [
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/bike.jpg"
+        ]
+    fifthSetImages = [
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg"
+        ]
+    sixthSetImages = [
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc1.jpg",
+        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg"
+        ]
     seventhSetImages = []
     ImageBundle = [firstSetImages, secondSetImages, thirdSetImages, fourthSetImages, fifthSetImages, sixthSetImages, seventhSetImages]
     
@@ -67,7 +77,7 @@ class ImageViewer(QWidget):
         super(ImageViewer, self).__init__()
         self.initGUI()
         self.counter = 0
-        self.pageLocation = "MAIN"
+        self.directory = "MAIN"
         
     
     def initGUI(self):
@@ -76,34 +86,45 @@ class ImageViewer(QWidget):
         self.mainPicture.setAlignment(Qt.AlignCenter)
         #self.mainPicture.setStyleSheet("QWidget{padding-right: 500px; padding-left: 500px}")
         #self.mainPicture.setGeometry(QRect(500, 500))
-        self.moveRight = QLabel("RIGHT")
+        self.moveRight = QLabel("LEFT")
         self.moveRight.setAlignment(Qt.AlignCenter)
-        self.setPageLocation("MAIN")
-        clickable(self.moveRight).connect(partial(self.pressEvent, "RIGHT", self.getPageLocation()))
-        self.moveLeft = QLabel("LEFT")
+        self.moveLeft = QLabel("RIGHT")
         self.moveLeft.setAlignment(Qt.AlignCenter)
-        clickable(self.moveLeft).connect(partial(self.pressEvent, "LEFT", self.getPageLocation()))
         
         grid = QGridLayout()
         grid.setSpacing(10)
         grid.addWidget(self.moveRight, 0, 1)
-        grid.addWidget(self.mainPicture, 0, 2)
+        #grid.addWidget(self.mainPicture, 0, 2)
         grid.addWidget(self.moveLeft, 0, 3)
         
         self.setLayout(grid)
         #self.setStyleSheet("QWidget{background-color: #000000;}")
-        self.showFullScreen()
-        #self.show()
+        #self.showFullScreen()
+        self.show()
         
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()
+        elif event.key() == Qt.Key_Left:
+            #print("LEFT")
+            self.pressEvent("LEFT", self.counter)
+            #print(self.directory)
+        elif event.key() == Qt.Key_Right:
+            #print("RIGHT")
+            self.pressEvent("RIGHT", self.counter)
+            #print(self.directory)
         elif event.key() == Qt.Key_Space:
-            print(str(self.counter))
+            print("COUNTER: " + str(self.counter))
             #print(str(len(self.ImageBundle[self.counter])))
-            self.setPageLocation(self.counter)
+            self.directory = "ENTER"
             #self.pageLocation = self.counter
-            self.pressEvent("ENTER", self.getPageLocation())
+            self.pressEvent("ENTER", self.counter)
+            #print(self.ImageBundle[self.counter][0])
+            self.showImages(self.ImageBundle[self.counter][0])
+            self.counter = 0
+            
+            
+            
             
     def nextImage(self, imageList):
         if imageList:
@@ -119,29 +140,42 @@ class ImageViewer(QWidget):
                 Qt.SmoothTransformation))
             
     def pressEvent(self, objSource, pageLocation):
-        print pageLocation
-        print objSource
-        if(objSource == "RIGHT" and pageLocation == "MAIN"):
-            self.counter = self.counter + 1
-            #print(str(len(self.OptionImages)))
-            if(self.counter > (len(self.OptionImages)-1)):
-                self.counter = 0
-            self.showImages(self.OptionImages[self.counter])
-            #print("RIGHT: " + str(self.counter))
-        elif (objSource == "LEFT" and pageLocation == "MAIN"):
-            self.counter = self.counter - 1
-            if(self.counter < 0):
-                self.counter = (len(self.OptionImages)-1)
-            self.showImages(self.OptionImages[self.counter])
-            #print("LEFT: " + str(self.counter))
-        elif (objSource == "ENTER" and pageLocation == 1):
-            self.showImages(self.firstSetImages[self.counter])
+        print ("PAGELOCATION: "+ str(pageLocation))
+#         print objSource
+#         print self.directory
             
-        
-    def setPageLocation(self, pageLocation):
-        self.pageLocation = pageLocation
-    
-    def getPageLocation(self):
-        return self.pageLocation        
+        if(objSource == "RIGHT"):
+            if(self.directory == "MAIN"):
+                self.counter = self.counter + 1
+                #print(str(len(self.OptionImages)))
+                if(self.counter > (len(self.OptionImages)-1)):
+                    self.counter = 0
+                self.showImages(self.OptionImages[self.counter])
+                #print("RIGHT: " + str(self.counter))
+            elif(self.directory == "ENTER"):
+                #self.showImages(self.ImageBundle[self.counter[self.counter]])
+                #print(self.ImageBundle[pageLocation][self.counter])
+                #print(len(self.ImageBundle[pageLocation]))
+                self.counter = self.counter + 1
+                print(self.counter)
+#                 if(self.counter > (len(self.ImageBundle[pageLocation])-1)):
+#                     self.counter = 0
+        elif (objSource == "LEFT"):
+            if (self.directory == "MAIN"):
+                self.counter = self.counter - 1
+                if(self.counter < 0):
+                    self.counter = (len(self.OptionImages)-1)
+                self.showImages(self.OptionImages[self.counter])
+                    #print("LEFT: " + str(self.counter))
+            elif(self.directory == "ENTER"):
+                #num = int(pageLocation)
+                #self.counter = 0
+                #self.showImages(self.ImageBundle[self.counter[self.counter]])
+                #print(len(self.ImageBundle[pageLocation]))
+                self.counter = self.counter - 1
+                print(self.counter)
+                #print(len(self.ImageBundle[self.counter]))
+            
+      
     
         
