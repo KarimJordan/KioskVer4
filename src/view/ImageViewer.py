@@ -5,6 +5,7 @@ Created on Jan 20, 2015
 '''
 import sys
 import os
+import string
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -39,35 +40,50 @@ class ImageViewer(QWidget):
     classdocs
     '''
     OptionImages = [
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc1.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/bike.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/pencil.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/smile.jpg",
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/stocks.jpg"           
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Chrysanthemum.jpg",
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Desert.jpg", 
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Hydrangeas.jpg", 
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Jellyfish.jpg", 
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Koala.jpg", 
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Lighthouse.jpg", 
+       "C:/Users/Decoder/Desktop/Kiosk System/Folder/Penguins.jpg",           
         ]
     firstSetImages = [
-       "C:/Users/Decoder/Desktop/Image Resources for Thesis/stocks.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Lighthouse.jpg"
         ]
     secondSetImages = [
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/smile.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Koala.jpg"
         ]
     thirdSetImages = [
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pencil.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Jellyfish.jpg"
         ]
     fourthSetImages = [
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/bike.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Hydrangeas.jpg"
         ]
     fifthSetImages = [
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Desert.jpg"
         ]
     sixthSetImages = [
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc1.jpg",
-        "C:/Users/Decoder/Desktop/Image Resources for Thesis/pc2.jpg"
+        "C:/Users/Public/Pictures/Sample Pictures/Chrysanthemum.jpg"
         ]
     seventhSetImages = []
     ImageBundle = [firstSetImages, secondSetImages, thirdSetImages, fourthSetImages, fifthSetImages, sixthSetImages, seventhSetImages]
+    firstOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/FirstOption"
+    secondOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SecondOption"
+    thirdOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/ThirdOption"
+    fourthOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/FourthOption"
+    fifthOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/FifthOption"
+    sixthOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SixthOption"
+    seventhOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SeventhOption"
     
+    OptionFolders = [
+        firstOptionPath,
+        secondOptionPath,
+        thirdOptionPath,
+        fourthOptionPath,
+        fifthOptionPath,
+        sixthOptionPath,
+        seventhOptionPath]
 
     
     def __init__(self):
@@ -76,16 +92,26 @@ class ImageViewer(QWidget):
         '''
         super(ImageViewer, self).__init__()
         self.initGUI()
+        #self.checkDirectory("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
+        #self.checkIfFolder("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
         self.counter = 0
         self.directory = "MAIN"
         self.subDirectory = 0
+        self.mainFileCount = []
+        self.mainFileList = []
+        self.subFileCount = []
+        self.subFileList = []
+        self.selfFileList = []
+        self.mainFileNames = []
+        self.subFolderList = []
+        self.mainFolderList = []
         
     
     def initGUI(self):
         
         self.mainPicture = QLabel()
         self.mainPicture.setAlignment(Qt.AlignCenter)
-        #self.mainPicture.setStyleSheet("QWidget{padding-right: 500px; padding-left: 500px}")
+        #self.mainPicture.setStyleSheet("QWidget{width: 100%; height: 100%; padding:0; margin: 0}")
         #self.mainPicture.setGeometry(QRect(500, 500))
         self.moveRight = QLabel("LEFT")
         self.moveRight.setAlignment(Qt.AlignCenter)
@@ -94,90 +120,135 @@ class ImageViewer(QWidget):
         
         grid = QGridLayout()
         grid.setSpacing(10)
-        grid.addWidget(self.moveRight, 0, 1)
-        #grid.addWidget(self.mainPicture, 0, 2)
-        grid.addWidget(self.moveLeft, 0, 3)
+        #grid.addWidget(self.moveRight, 0, 1)
+        grid.addWidget(self.mainPicture, 0, 2)
+        #grid.addWidget(self.moveLeft, 0, 3)
         
         self.setLayout(grid)
         #self.setStyleSheet("QWidget{background-color: #000000;}")
-        #self.showFullScreen()
-        self.show()
+        self.showFullScreen()
+        #self.show()
         
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()
         elif event.key() == Qt.Key_Left:
-            #print("LEFT")
-            self.pressEvent("LEFT", self.counter)
-            #print(self.directory)
+            print (self.directory)
+            self.pressEventII("LEFT", self.directory)
         elif event.key() == Qt.Key_Right:
-            #print("RIGHT")
-            self.pressEvent("RIGHT", self.counter)
-            #print(self.directory)
+            print (self.directory)
+            self.pressEventII("RIGHT", self.directory)
         elif event.key() == Qt.Key_Space:
-            print("COUNTER: " + str(self.counter))
-            #print(str(len(self.ImageBundle[self.counter])))
-            self.directory = "ENTER"
-            #self.pageLocation = self.counter
-            self.pressEvent("ENTER", self.counter)
-            #print(self.ImageBundle[self.counter][0])
-            self.showImages(self.ImageBundle[self.counter][0])
-            self.counter = 0
+            self.pressEventII("ENTER", self.directory)
             
-            
-            
-            
-    def nextImage(self, imageList):
-        if imageList:
-            if self.counter == len(imageList):
-                self.counter = 0
-                #add code for showing image path
                 
     def showImages(self, path):
         if path:
-            image = QPixmap(path)
-            self.mainPicture.setPixmap(image.scaled(self.mainPicture.size(), 
-                Qt.KeepAspectRatio, 
-                Qt.SmoothTransformation))
+            image = QtGui.QImage(path)
+            pp = QtGui.QPixmap.fromImage(image)
+            #image = QPixmap(path)
+            self.mainPicture.setPixmap(pp.scaled(self.mainPicture.size(),
+                Qt.IgnoreAspectRatio, 
+                Qt.FastTransformation))
             
-    def pressEvent(self, objSource, pageLocation):
-#         print objSource
-#         print self.directory
-        #self.directory = pageLocation
-        if(objSource == "RIGHT"):
-            print ("MAIN PAGELOCATION: "+ str(pageLocation))
-            if(self.directory == "MAIN"):
-                self.counter = self.counter + 1
-                #print(str(len(self.OptionImages)))
-                if(self.counter > (len(self.OptionImages)-1)):
-                    self.counter = 0
-                self.showImages(self.OptionImages[self.counter])
-                #print("RIGHT: " + str(self.counter))
-            elif(self.directory == "ENTER"):
-                #self.showImages(self.ImageBundle[self.counter[self.counter]])
-                #print(self.ImageBundle[pageLocation][self.counter])
-                #print(len(self.ImageBundle[pageLocation]))
-                self.counter = self.counter + 1
-                print(self.counter)
-#                 if(self.counter > (len(self.ImageBundle[pageLocation])-1)):
-#                     self.counter = 0
-        elif (objSource == "LEFT"):
-            print ("MAIN PAGELOCATION: "+ str(pageLocation))
-            if (self.directory == "MAIN"):
+    def pressEventII (self, action, location):
+        if(location == "MAIN"):
+            print(location)
+            if(action == "LEFT"):
                 self.counter = self.counter - 1
                 if(self.counter < 0):
                     self.counter = (len(self.OptionImages)-1)
                 self.showImages(self.OptionImages[self.counter])
-                    #print("LEFT: " + str(self.counter))
-            elif(self.directory == "ENTER"):
-                #num = int(pageLocation)
-                #self.counter = 0
-                #self.showImages(self.ImageBundle[self.counter[self.counter]])
-                #print(len(self.ImageBundle[pageLocation]))
-                self.counter = self.counter - 1
-                print(self.counter)
-                #print(len(self.ImageBundle[self.counter]))
+                print("MAIN " + str(self.counter))
+            elif(action == "RIGHT"):
+                self.counter = self.counter + 1
+                if(self.counter > (len(self.OptionImages)-1)):
+                    self.counter = 0
+                self.showImages(self.OptionImages[self.counter])
+                print("MAIN " + str(self.counter))
+            elif(action == "ENTER"):
+                self.directory = "SUB"
+                mainSubDirs, MainfileCounters = self.checkDirectory(self.OptionFolders[self.counter])
+                mainFileNames = self.returnFileList(self.OptionFolders[self.counter])
+                mainFolder = self.checkIfFolder(self.OptionFolders[self.counter])
+                self.mainFolderList = mainFolder
+                self.mainFileNames = mainFileNames
+                self.mainFileCount = MainfileCounters
+                self.mainFileList = mainSubDirs
+                self.counter = 0
+                self.showImages(self.mainFileList[0] + "/" + self.mainFileNames[0])
+                print(self.mainFileList[0] + "/" + self.mainFileNames[0])
+                print(self.mainFileNames)
+                print(self.mainFolderList)
+        elif(location == "SUB"):
+            print(location)
+            if(action == "LEFT"):
+                self.subDirectory = self.subDirectory - 1 
+                if(self.subDirectory < 0):
+                    self.subDirectory = (self.mainFileCount[0]-1)
+                self.showImages(self.mainFolderList[self.subDirectory]+".jpg")
+                print self.mainFolderList[self.subDirectory]
+                print(self.mainFileList[self.subDirectory] + "\n" + self.mainFileNames[self.subDirectory])  
+            elif(action == "RIGHT"):
+                self.subDirectory = self.subDirectory + 1
+                if(self.subDirectory > (self.mainFileCount[0]-1)):
+                    self.subDirectory = 0
+                self.showImages(self.mainFolderList[self.subDirectory]+".jpg")
+                #self.showImages(self.mainFileList[self.subDirectory] + "/" + self.mainFileNames[self.subDirectory])    
+                print self.mainFolderList[self.subDirectory]
+                print(self.mainFileList[self.subDirectory] + "\n" + self.mainFileNames[self.subDirectory]) 
+            elif(action == "ENTER"):
+                #print(self.subDirectory)
+                #print(self.mainFolderList[self.subDirectory])
+                if(self.subDirectory == 0):
+                    print "SJKLAHA"
+                    self.counter = 0
+                    self.directory = "MAIN"
+                    self.showImages(self.OptionImages[0])
+                else:
+                    self.subFileList, self.subFileCount = self.checkDirectory(self.mainFolderList[self.subDirectory])
+                    self.selfFileList = self.returnFileList(self.mainFolderList[self.subDirectory])
+                    self.subFolderList = self.checkIfFolder(self.mainFolderList[self.subDirectory])
+                    self.mainFolderList = self.subFolderList
+                    self.mainFileCount = self.subFileCount
+                    self.mainFileNames = self.selfFileList
+                    self.subDirectory = 0
+#                 print(self.mainFileList)
+#                 print(self.mainFileCount)
+                    print(self.mainFileList[0] + "/" + self.mainFileNames[0])
+                #self.showImages(self.mainFileList[0] + "/" + self.mainFileNames[0])
+                    print(self.mainFolderList)
+                    print(self.mainFileNames)
             
-      
+    def checkDirectory(self, path):
+        rootList = []
+        fileCountList = []
+        for root, sub, files in os.walk(path):
+            fileCounter = 0
+            if(os.path.isdir(path)):
+               for fileName in files:
+                   if(fileName.endswith('jpg') or fileName.endswith('JPG')):
+                       fileCounter = fileCounter + 1
+                       #print("fileName: " + fileName)
+               rootDir = string.replace(root, "\\", "/")
+               rootList.append(rootDir)
+               fileCountList.append(fileCounter)
+#         print rootList
+#         print fileCountList
+        return rootList, fileCountList
     
+    def checkIfFolder(self, path):
+        folderList = []
+        for fileNames in os.listdir(path):
+            if(os.path.isdir(path + "/" +fileNames)):
+                folderList.append(path + "/" + fileNames)
+        return folderList
+    
+    def returnFileList(self, path):
+        fileNameList = []
+        for fileNames in os.listdir(path):
+            if fileNames.endswith('jpg') or fileNames.endswith('JPG'):
+                fileNameList.append(fileNames)
+        return fileNameList
+            
         
