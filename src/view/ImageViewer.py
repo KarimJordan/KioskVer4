@@ -76,6 +76,17 @@ class ImageViewer(QWidget):
     sixthOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SixthOption"
     seventhOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SeventhOption"
     
+    #sounds
+    announcements = "C:/Users/Decoder/Desktop/Image Resources for Thesis/Announcements.wav"
+    activities = "C:/Users/Decoder/Desktop/Image Resources for Thesis/Activities.wav"
+    clubActivities = "C:/Users/Decoder/Desktop/Image Resources for Thesis/ClubActivties.wav"
+    examinations = "C:/Users/Decoder/Desktop/Image Resources for Thesis/ExaminationSchedule.wav"
+    facultyMembers = "C:/Users/Decoder/Desktop/Image Resources for Thesis/FacultyMembers.wav"
+    fyi = "C:/Users/Decoder/Desktop/Image Resources for Thesis/fyi.wav"
+    schedule = "C:/Users/Decoder/Desktop/Image Resources for Thesis/Schedule.wav"
+    
+    soundList = [announcements, activities, clubActivities, examinations, facultyMembers, fyi, schedule]
+    
     OptionFolders = [
         firstOptionPath,
         secondOptionPath,
@@ -113,6 +124,8 @@ class ImageViewer(QWidget):
         self.mainPicture.setAlignment(Qt.AlignCenter)
         #self.mainPicture.setStyleSheet("QWidget{width: 100%; height: 100%; padding:0; margin: 0}")
         #self.mainPicture.setGeometry(QRect(500, 500))
+        self.showImages(self.OptionImages[0])
+        self.playSound(self.soundList[0])
         self.moveRight = QLabel("LEFT")
         self.moveRight.setAlignment(Qt.AlignCenter)
         self.moveLeft = QLabel("RIGHT")
@@ -159,15 +172,18 @@ class ImageViewer(QWidget):
                 if(self.counter < 0):
                     self.counter = (len(self.OptionImages)-1)
                 self.showImages(self.OptionImages[self.counter])
+                self.playSound(self.soundList[self.counter])
                 print("MAIN " + str(self.counter))
             elif(action == "RIGHT"):
                 self.counter = self.counter + 1
                 if(self.counter > (len(self.OptionImages)-1)):
                     self.counter = 0
                 self.showImages(self.OptionImages[self.counter])
+                self.playSound(self.soundList[self.counter])
                 print("MAIN " + str(self.counter))
             elif(action == "ENTER"):
                 self.directory = "SUB"
+                
                 mainSubDirs, MainfileCounters = self.checkDirectory(self.OptionFolders[self.counter])
                 mainFileNames = self.returnFileList(self.OptionFolders[self.counter])
                 mainFolder = self.checkIfFolder(self.OptionFolders[self.counter])
@@ -216,7 +232,7 @@ class ImageViewer(QWidget):
 #                 print(self.mainFileList)
 #                 print(self.mainFileCount)
                     print(self.mainFileList[0] + "/" + self.mainFileNames[0])
-                #self.showImages(self.mainFileList[0] + "/" + self.mainFileNames[0])
+                    self.showImages(self.mainFolderList[self.subDirectory]+".jpg")
                     print(self.mainFolderList)
                     print(self.mainFileNames)
             
@@ -250,5 +266,10 @@ class ImageViewer(QWidget):
             if fileNames.endswith('jpg') or fileNames.endswith('JPG'):
                 fileNameList.append(fileNames)
         return fileNameList
+    
+    def playSound(self, path):
+        QSound.play(path)
+    
+    
             
         
