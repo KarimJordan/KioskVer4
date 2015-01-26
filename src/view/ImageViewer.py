@@ -64,26 +64,6 @@ class ImageViewer(QWidget):
        "C:/Users/Decoder/Desktop/Kiosk System/Folder/Lighthouse.jpg", 
        "C:/Users/Decoder/Desktop/Kiosk System/Folder/Penguins.jpg",           
         ]
-    firstSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Lighthouse.jpg"
-        ]
-    secondSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Koala.jpg"
-        ]
-    thirdSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Jellyfish.jpg"
-        ]
-    fourthSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Hydrangeas.jpg"
-        ]
-    fifthSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Desert.jpg"
-        ]
-    sixthSetImages = [
-        "C:/Users/Public/Pictures/Sample Pictures/Chrysanthemum.jpg"
-        ]
-    seventhSetImages = []
-    ImageBundle = [firstSetImages, secondSetImages, thirdSetImages, fourthSetImages, fifthSetImages, sixthSetImages, seventhSetImages]
     firstOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/FirstOption"
     secondOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/SecondOption"
     thirdOptionPath = "C:/Users/Decoder/Desktop/Kiosk System/Folder/ThirdOption"
@@ -121,7 +101,7 @@ class ImageViewer(QWidget):
         super(ImageViewer, self).__init__()
         #QWidget.__init__(self,  parent)
         self.timer = QTimer()
-        #self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
+        self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
         self.timer.start(1000)
         self.initGUI()
         #self.checkDirectory("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
@@ -164,8 +144,8 @@ class ImageViewer(QWidget):
         
         self.setLayout(grid)
         #self.setStyleSheet("QWidget{background-color: #000000;}")
-        #self.showFullScreen()
-        self.show()
+        self.showFullScreen()
+        #self.show()
         
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -186,7 +166,11 @@ class ImageViewer(QWidget):
             if(self.state == "INIT"):
                 self.timer.stop()
                 self.showImages(self.OptionImages[0])
+                self.playSound(self.soundList[0])
                 self.state = "STOP"
+                seq = (str(self.messageCounter), " Logged at")
+                self.logMessage(''.join(seq))
+                self.messageCounter = self.messageCounter + 1
             else:
                 None
             
@@ -257,6 +241,7 @@ class ImageViewer(QWidget):
                     self.counter = 0
                     self.directory = "MAIN"
                     self.showImages(self.OptionImages[0])
+                    self.playSound(self.soundList[0])
                 else:
                     self.subFileList, self.subFileCount = self.checkDirectory(self.mainFolderList[self.subDirectory])
                     self.selfFileList = self.returnFileList(self.mainFolderList[self.subDirectory])
@@ -318,17 +303,5 @@ class ImageViewer(QWidget):
             seq = (message, " :", str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), "\n")
             logFile.write(''.join(seq))
             logFile.close()
-        
-    def startSlideShow(self, images):
-#         if self.step > len(images):
-#             timer.stop()
-#             return
-#         timer.start(1000)
-#         print ("TIMER START")
-#         self.showImages(images[self.step])
-#         print(str(self.step))
-#         self.step = self.step + 1
-        print("SAHKJS")
-        
             
         
