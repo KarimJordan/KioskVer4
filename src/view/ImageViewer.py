@@ -14,6 +14,7 @@ from PyQt4.QtGui import *
 from PyQt4 import QtGui
 from sys import path
 from _functools import partial 
+from datetime import datetime
 
    
 def clickable(widget):
@@ -120,7 +121,7 @@ class ImageViewer(QWidget):
         super(ImageViewer, self).__init__()
         #QWidget.__init__(self,  parent)
         self.timer = QTimer()
-        self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
+        #self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
         self.timer.start(1000)
         self.initGUI()
         #self.checkDirectory("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
@@ -137,6 +138,7 @@ class ImageViewer(QWidget):
         self.mainFileNames = []
         self.subFolderList = []
         self.mainFolderList = []
+        self.messageCounter = 0
         
         
     
@@ -162,8 +164,8 @@ class ImageViewer(QWidget):
         
         self.setLayout(grid)
         #self.setStyleSheet("QWidget{background-color: #000000;}")
-        self.showFullScreen()
-        #self.show()
+        #self.showFullScreen()
+        self.show()
         
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -176,6 +178,10 @@ class ImageViewer(QWidget):
             self.pressEventII("RIGHT", self.directory)
         elif event.key() == Qt.Key_Space:
             self.pressEventII("ENTER", self.directory)
+        elif event.key() == Qt.Key_Down:
+            seq = (str(self.messageCounter), " Logged at")
+            self.logMessage(''.join(seq))
+            self.messageCounter = self.messageCounter + 1
         elif event.key() == Qt.Key_Up:
             if(self.state == "INIT"):
                 self.timer.stop()
@@ -234,7 +240,7 @@ class ImageViewer(QWidget):
                     self.subDirectory = (self.mainFileCount[0]-1)
                 self.showImages(self.mainFolderList[self.subDirectory]+".jpg")
                 print self.mainFolderList[self.subDirectory]
-                print(self.mainFileList[self.subDirectory] + "\n" + self.mainFileNames[self.subDirectory])  
+                print(self.mainFileList[self.subDirectory] + "/n" + self.mainFileNames[self.subDirectory])  
             elif(action == "RIGHT"):
                 self.subDirectory = self.subDirectory + 1
                 if(self.subDirectory > (self.mainFileCount[0]-1)):
@@ -242,7 +248,7 @@ class ImageViewer(QWidget):
                 self.showImages(self.mainFolderList[self.subDirectory]+".jpg")
                 #self.showImages(self.mainFileList[self.subDirectory] + "/" + self.mainFileNames[self.subDirectory])    
                 print self.mainFolderList[self.subDirectory]
-                print(self.mainFileList[self.subDirectory] + "\n" + self.mainFileNames[self.subDirectory]) 
+                print(self.mainFileList[self.subDirectory] + "/n" + self.mainFileNames[self.subDirectory]) 
             elif(action == "ENTER"):
                 #print(self.subDirectory)
                 #print(self.mainFolderList[self.subDirectory])
@@ -276,7 +282,7 @@ class ImageViewer(QWidget):
                    if(fileName.endswith('jpg') or fileName.endswith('JPG')):
                        fileCounter = fileCounter + 1
                        #print("fileName: " + fileName)
-               rootDir = string.replace(root, "\\", "/")
+               rootDir = string.replace(root, "//", "/")
                rootList.append(rootDir)
                fileCountList.append(fileCounter)
 #         print rootList
@@ -300,9 +306,18 @@ class ImageViewer(QWidget):
     def playSound(self, path):
         QSound.play(path)
         
-    def logMessage(self, path, message):
-        print (path)
-        print (message)
+    def logMessage(self, message):
+        path = "C:/Users/Decoder/Desktop/Kiosk System/Folder/logs.txt"
+        if(os.path.exists(path)):
+            logFile = open(path, "ab")
+            seq = (message, " :", str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), "\n")
+            logFile.write(''.join(seq))
+            logFile.close()
+        else:
+            logFile = open(path, "w")
+            seq = (message, " :", str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), "\n")
+            logFile.write(''.join(seq))
+            logFile.close()
         
     def startSlideShow(self, images):
 #         if self.step > len(images):
