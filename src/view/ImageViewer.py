@@ -43,6 +43,7 @@ class ImageViewer(QWidget):
     classdocs
     '''
     step = 0
+    state = "INIT"
     
     @pyqtSlot()
     def count(self):
@@ -118,6 +119,9 @@ class ImageViewer(QWidget):
         '''
         super(ImageViewer, self).__init__()
         #QWidget.__init__(self,  parent)
+        self.timer = QTimer()
+        self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
+        self.timer.start(1000)
         self.initGUI()
         #self.checkDirectory("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
         #self.checkIfFolder("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
@@ -133,21 +137,17 @@ class ImageViewer(QWidget):
         self.mainFileNames = []
         self.subFolderList = []
         self.mainFolderList = []
-        self.timer = QTimer()
-        self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
-        self.timer.start(1000)
+        
         
     
     def initGUI(self):
         
         self.mainPicture = QLabel()
         self.mainPicture.setAlignment(Qt.AlignCenter)
-       
         #self.mainPicture.setStyleSheet("QWidget{width: 100%; height: 100%; padding:0; margin: 0}")
         #self.mainPicture.setGeometry(QRect(500, 500))
         #self.showImages(self.OptionImages[0])
-        #self.playSound(self.soundList[0])
-        
+        #self.playSound(self.soundList[0]) 
         self.moveRight = QLabel("LEFT")
         self.moveRight.setAlignment(Qt.AlignCenter)
         self.moveLeft = QLabel("RIGHT")
@@ -177,7 +177,12 @@ class ImageViewer(QWidget):
         elif event.key() == Qt.Key_Space:
             self.pressEventII("ENTER", self.directory)
         elif event.key() == Qt.Key_Up:
-            self.timer.stop()
+            if(self.state == "INIT"):
+                self.timer.stop()
+                self.showImages(self.OptionImages[0])
+                self.state = "STOP"
+            else:
+                None
             
                 
     def showImages(self, path):
