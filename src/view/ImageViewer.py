@@ -3,16 +3,19 @@ Created on Jan 20, 2015
 
 @author: Decoder
 '''
+
+#count kung ilan yung gumamit, via text file.
 import sys
 import os
 import string
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sys import path
 from PyQt4 import QtGui
-from _functools import partial
+from sys import path
+from _functools import partial 
 
+   
 def clickable(widget):
 
     class Filter(QObject):
@@ -39,6 +42,17 @@ class ImageViewer(QWidget):
     '''
     classdocs
     '''
+    step = 0
+    
+    @pyqtSlot()
+    def count(self):
+        print(str(self.step))
+        if(self.step >= len(self.OptionImages)):
+            self.step = 0
+        self.showImages(self.OptionImages[self.step])
+        self.step = self.step + 1
+
+    
     OptionImages = [
        "C:/Users/Decoder/Desktop/Kiosk System/Folder/Chrysanthemum.jpg",
        "C:/Users/Decoder/Desktop/Kiosk System/Folder/Desert.jpg", 
@@ -95,19 +109,22 @@ class ImageViewer(QWidget):
         fifthOptionPath,
         sixthOptionPath,
         seventhOptionPath]
-
     
-    def __init__(self):
+    
+    
+    def __init__(self, parent = None):
         '''
         Constructor
         '''
         super(ImageViewer, self).__init__()
+        #QWidget.__init__(self,  parent)
         self.initGUI()
         #self.checkDirectory("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
         #self.checkIfFolder("C:/Users/Public/Pictures/Sample Pictures/SecondOption")
         self.counter = 0
         self.directory = "MAIN"
         self.subDirectory = 0
+        #self.startSlideShow(self.OptionImages)
         self.mainFileCount = []
         self.mainFileList = []
         self.subFileCount = []
@@ -116,20 +133,26 @@ class ImageViewer(QWidget):
         self.mainFileNames = []
         self.subFolderList = []
         self.mainFolderList = []
+        self.timer = QTimer()
+        self.connect(self.timer, SIGNAL("timeout()"),self, SLOT("count()"))
+        self.timer.start(1000)
         
     
     def initGUI(self):
         
         self.mainPicture = QLabel()
         self.mainPicture.setAlignment(Qt.AlignCenter)
+       
         #self.mainPicture.setStyleSheet("QWidget{width: 100%; height: 100%; padding:0; margin: 0}")
         #self.mainPicture.setGeometry(QRect(500, 500))
-        self.showImages(self.OptionImages[0])
-        self.playSound(self.soundList[0])
+        #self.showImages(self.OptionImages[0])
+        #self.playSound(self.soundList[0])
+        
         self.moveRight = QLabel("LEFT")
         self.moveRight.setAlignment(Qt.AlignCenter)
         self.moveLeft = QLabel("RIGHT")
         self.moveLeft.setAlignment(Qt.AlignCenter)
+        
         
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -153,6 +176,8 @@ class ImageViewer(QWidget):
             self.pressEventII("RIGHT", self.directory)
         elif event.key() == Qt.Key_Space:
             self.pressEventII("ENTER", self.directory)
+        elif event.key() == Qt.Key_Up:
+            self.timer.stop()
             
                 
     def showImages(self, path):
@@ -269,7 +294,21 @@ class ImageViewer(QWidget):
     
     def playSound(self, path):
         QSound.play(path)
-    
-    
+        
+    def logMessage(self, path, message):
+        print (path)
+        print (message)
+        
+    def startSlideShow(self, images):
+#         if self.step > len(images):
+#             timer.stop()
+#             return
+#         timer.start(1000)
+#         print ("TIMER START")
+#         self.showImages(images[self.step])
+#         print(str(self.step))
+#         self.step = self.step + 1
+        print("SAHKJS")
+        
             
         
