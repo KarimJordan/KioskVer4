@@ -8,6 +8,8 @@ Created on Jan 20, 2015
 import sys
 import os
 import string
+import time
+import RPi.GPIO as GPIO
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -45,15 +47,7 @@ class ImageViewer(QWidget):
     '''
     step = 0
     state = "INIT"
-    
-    @pyqtSlot()
-    def count(self):
-        print(str(self.step))
-        if(self.step >= len(self.OptionImages)):
-            self.step = 0
-        self.showImages(self.OptionImages[self.step])
-        self.step = self.step + 1
-
+   
     
     OptionImages = [
        "C:/Users/Decoder/Desktop/Kiosk System/Folder/Chrysanthemum.jpg",
@@ -92,7 +86,13 @@ class ImageViewer(QWidget):
         sixthOptionPath,
         seventhOptionPath]
     
-    
+    @pyqtSlot()
+    def count(self):
+        print(str(self.step))
+        if(self.step >= len(self.OptionImages)):
+            self.step = 0
+        self.showImages(self.OptionImages[self.step])
+        self.step = self.step + 1
     
     def __init__(self, parent = None):
         '''
@@ -304,4 +304,36 @@ class ImageViewer(QWidget):
             logFile.write(''.join(seq))
             logFile.close()
             
+    def ultrasonicSensor(self, trigger, echo):
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(trigger, GPIO.OUT)
+        GPIO.setup(echo, GPIO.IN)
+        GPIO.output(trigger, False)
+        time.sleep(2)
+        GPIO.output(trigger, True)
+        time.sleep(0.00001)
+        GPIO.output(trigger, False)
+        #start = time.time()
+        while GPIO.input(echo) == 0:
+            start = time.time()
+        while GPIO.input(echo) == 1:
+            stop = time.time()
+        elapsed = stop - start
+        distance = elapsed * 17150 #distance returned is in centimeter
+        distance = distance / 2
+        return distance
+        GPIO.cleanup()
+        
+    def passiveInfraSensor(self, pin):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(pin, GPIO.IN)
+        try:
+            time.sleep(2)
+            while True:
+                if GPIO.input(pin):
+                    return True
+                time.sleep(1)
+        except KeyboardInterrupt:
+            GPIO.cleanup()
         
